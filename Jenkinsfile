@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "requiemxop/jenkins-lib-consumer"
+        IMAGE_NAME = "xreqq/jenkins-lib-consumer"
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')  // Jenkins Credentials ID
     }
 
