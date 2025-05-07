@@ -3,32 +3,34 @@ pipeline {
 
     environment {
         IMAGE_NAME = "requiemxop/jenkins-lib-consumer"
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub')  // ID you set in Jenkins credentials
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')  // Jenkins Credentials ID
+    }
+
+    options {
+        skipDefaultCheckout(true)
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                echo '🧹 Cleaning workspace...'
+                deleteDir()
+            }
+        }
+
         stage('Clone Git Repo') {
             steps {
-                script {
-                    echo '✅ Cloning from GitHub...'
-
-                    // Clean existing repo folder if it exists
-                    def repoDir = 'jenkins-lib-consumer'
-                    if (fileExists(repoDir)) {
-                        echo "🧹 Cleaning up existing directory: ${repoDir}"
-                        sh "rm -rf ${repoDir}"
-                    }
-
-                    // Now clone fresh
-                    sh 'git clone https://github.com/RequiemxOP/jenkins-lib-consumer.git'
-                }
+                echo '✅ Cloning from GitHub...'
+                sh 'git clone https://github.com/RequiemxOP/jenkins-lib-consumer.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 echo '🔨 Building Docker image...'
-                sh 'docker build -t $IMAGE_NAME .'
+                dir('jenkins-lib-consumer') {
+                    sh 'docker build -t $IMAGE_NAME .'
+                }
             }
         }
 
