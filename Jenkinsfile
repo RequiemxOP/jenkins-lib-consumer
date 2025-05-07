@@ -9,9 +9,19 @@ pipeline {
     stages {
         stage('Clone Git Repo') {
             steps {
-                echo '✅ Cloning from GitHub...'
-                // If pipeline is already triggered via Git SCM, this can be skipped
-                sh 'git clone https://github.com/RequiemxOP/jenkins-lib-consumer.git'
+                script {
+                    echo '✅ Cloning from GitHub...'
+
+                    // Clean existing repo folder if it exists
+                    def repoDir = 'jenkins-lib-consumer'
+                    if (fileExists(repoDir)) {
+                        echo "🧹 Cleaning up existing directory: ${repoDir}"
+                        sh "rm -rf ${repoDir}"
+                    }
+
+                    // Now clone fresh
+                    sh 'git clone https://github.com/RequiemxOP/jenkins-lib-consumer.git'
+                }
             }
         }
 
